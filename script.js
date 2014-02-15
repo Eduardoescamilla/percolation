@@ -17,7 +17,7 @@ for (var i = 0; i < n; i++) {
         } else if (j === 0) {
             a[i][j] = 0;
         } else {
-            a[i][j] = Math.random() < 0.55 ? 1 : 0;
+            a[i][j] = Math.random() < 0.6 ? 1 : 0;
         }
     }
 }
