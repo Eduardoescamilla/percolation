@@ -7,6 +7,22 @@
 </head>
 <body>
  <canvas class="canvas" id="canvas" width="512px" height="512px"></canvas>
+ <div class="controls"> 
+  <p>Вероятность</p>
+  <button id="btn_go">Выполнить</button>
+   <input type="text" id="prob" class="prob" value="0.57" placeholder="">
+   <select name="width" id="selectLength">
+     <option value="8">8</option>
+     <option value="16">16</option>
+     <option value="32">32</option>
+     <option value="64" selected="selected">64</option>
+     <option value="128">128</option>
+     <option value="256">256</option>
+   <option value="512">512</option>
+   </select>
+      <input type="text" id="cycle" class="prob" value="25" placeholder="">
+      <button id="btn_cycle">Циклически</button>
+ </div>
  <!-- <canvas class="canvas" id="canvas2" width="512px" height="512px"></canvas> -->
 
   <script src="script.js"></script>
