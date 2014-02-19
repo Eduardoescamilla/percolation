@@ -40,8 +40,8 @@ function control() {
     checkClusters();
     var leftCL = leftClusters();
     var goal = isPercolation();
-    // fillByColors();
-    // fillZeroCells();
+    fillByColors();
+    fillZeroCells();
 
 
 
