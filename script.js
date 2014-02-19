@@ -7,7 +7,9 @@ var cycle = document.getElementById('btn_cycle');
 
 control();
 go.addEventListener('click', function() {
+    console.time('test');
     control();
+    console.timeEnd('test');
 });
 
 cycle.addEventListener('click', function() {
@@ -38,8 +40,8 @@ function control() {
     checkClusters();
     var leftCL = leftClusters();
     var goal = isPercolation();
-    fillByColors();
-    fillZeroCells();
+    // fillByColors();
+    // fillZeroCells();
 
 
 
@@ -79,58 +81,6 @@ function control() {
         return a;
     }
 
-    /*    function checkClusters() {
-        var goodCL = [];
-        var count = 0;
-        for (var i = 1; i < L; i++) {
-            for (var j = 1; j < L; j++) {
-
-                cur = a[i][j];
-                up = a[i - 1][j];
-                left = a[i][j - 1];
-
-                if (cur !== 0) {
-                    if (cur === 1) {
-                        if (left === 0 && up === 0) {
-                            a[i][j] = ++count;
-                        } else if (up === 0 && left !== 0) {
-                            a[i][j] = left;
-                        } else if (up !== 0 && left === 0) {
-                            a[i][j] = up;
-                        } else if (up > 0 && left > 0) {
-                            if (left < up) {
-                                a[i][j] = left;
-                                goodCL[up] = left;
-                                // console.log('Change: ' + up + ', on the: ' + left);
-                                for (var ii = 1; ii < L; ii++) {
-                                    for (var jj = 1; jj < L; jj++) {
-                                        if (a[ii][jj] == up) {
-                                            a[ii][jj] = left;
-                                        }
-                                    }
-                                }
-                            } else if (up < left) {
-                                a[i][j] = up;
-                                goodCL[left] = up;
-                                // console.log('Change: ' + left + ', on the: ' + up);
-                                for (var ii = 1; ii < L; ii++) {
-                                    for (var jj = 1; jj < L; jj++) {
-                                        if (a[ii][jj] == left) {
-                                            a[ii][jj] = up;
-                                        }
-                                    }
-                                }
-                            } else if (up == left) {
-                                a[i][j] = up;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-*/
-
     function checkClusters() {
         for (var j = 1; j < L; j++) {
             i = 1;
@@ -139,100 +89,40 @@ function control() {
             }
         }
 
-        var temp = 0;
-        while (temp <= 5) {
-            checkDown();
-            checkUP();
-            temp++;
-        }
 
-
-        function checkDown() {
-            for (var i = 1; i < L; i++) {
-                for (var j = 1; j < L; j++) {
-                    var cur = a[i][j],
-                        up = a[i - 1][j],
-                        left = a[i][j - 1];
-                    var right = a[i][j + 1];
-                    var down = a[i + 1][j];
-
-                    if (cur !== 0) {
-                        if (cur === 1) {
-                            if (up === 2 || left === 2 || right === 2 || down === 2) {
-                                a[i][j] = 2;
-                            }
-                        }
-                    }
-                }
-
-                for (var j = L - 1; j > 0; j--) {
-                    var cur = a[i][j],
-                        up = a[i - 1][j],
-                        left = a[i][j - 1];
-                    var right = a[i][j + 1];
-                    var down = a[i + 1][j];
-
-                    if (cur !== 0) {
-                        if (cur === 1) {
-                            if (up === 2 || left === 2 || right === 2 || down === 2) {
-                                a[i][j] = 2;
-                            }
-                        }
-                    }
-                }
-
+        for (var i = 1; i < L; i++) {
+            for (var j = 1; j < L; j++) {
+                chNeighbor(i, j);
             }
         }
 
-        function checkUP() {
-            for (var i = L - 1; i > 0; i--) {
-                for (var j = 1; j < L; j++) {
-                    var cur = a[i][j],
-                        up = a[i - 1][j],
-                        left = a[i][j - 1];
-                    var right = a[i][j + 1];
-                    var down = a[i + 1][j];
+        function chNeighbor(ii, jj) {
+            var cur = a[ii][jj],
+                up = a[ii - 1][jj],
+                left = a[ii][jj - 1],
+                right = a[ii][jj + 1],
+                down = a[ii + 1][jj];
 
-                    if (cur !== 0) {
-                        if (cur === 1) {
-                            if (up === 2 || left === 2 || right === 2 || down === 2) {
-                                a[i][j] = 2;
-                            }
-                        }
-                    }
+            if (cur === 2) {
+                if (up === 1) {
+                    a[ii - 1][jj] = 2;
+                    setTimeout(chNeighbor(ii - 1, jj), 5);
                 }
-
-                for (var j = L - 1; j > 0; j--) {
-                    var cur = a[i][j],
-                        up = a[i - 1][j],
-                        left = a[i][j - 1];
-                    var right = a[i][j + 1];
-                    var down = a[i + 1][j];
-
-                    if (cur !== 0) {
-                        if (cur === 1) {
-                            if (up === 2 || left === 2 || right === 2 || down === 2) {
-                                a[i][j] = 2;
-                            }
-                        }
-                    }
+                if (down === 1) {
+                    a[ii + 1][jj] = 2;
+                     setTimeout(chNeighbor(ii + 1, jj), 5);
                 }
-
+                if (left === 1) {
+                    a[ii][jj - 1] = 2;
+                     setTimeout(chNeighbor(ii, jj - 1), 5);
+                }
+                if (right === 1) {
+                    a[ii][jj + 1] = 2;
+                     setTimeout(chNeighbor(ii, jj + 1), 5);
+                }
             }
         }
-
-
-
-        // var str = '';
-        // for (var j = 0; j < L; j++) {
-        //     var i = L - 1;
-        //     str += a[i][j] + '\t';
-        // }
-        // console.log(str);
-        // console.log("\n");
-
-
-
+        console.log('FINISH!');
     }
 
     function leftClusters() {
@@ -268,18 +158,15 @@ function control() {
     }
 
     function fillByColors() {
-        leftCL.forEach(function(number) {
-            generate_colour = '#' + (Math.random() * 0xCCCCCC << 0).toString(16);
-            for (var i = 0; i < L; i++) {
-                for (var j = 0; j < L; j++) {
-                    if (a[i][j] === number) {
-                        context.fillRect((j - 1) * pixel, (i - 1) * pixel, pixel, pixel);
-                    }
-                    context.fillStyle = generate_colour;
+        for (var i = 0; i < L; i++) {
+            for (var j = 0; j < L; j++) {
+                if (a[i][j] === 1) {
+                    context.fillRect((j - 1) * pixel, (i - 1) * pixel, pixel, pixel);
                 }
-            }
-        });
+                context.fillStyle = 'darkcyan';
 
+            }
+        }
         if (goal) {
             for (var i = 0; i < L; i++) {
                 for (var j = 0; j < L; j++) {
@@ -296,7 +183,7 @@ function control() {
                     if (a[i][j] === 2) {
                         context.fillRect((j - 1) * pixel, (i - 1) * pixel, pixel, pixel);
                     }
-                    context.fillStyle = 'orange';
+                    context.fillStyle = 'black';
 
                 }
             }
