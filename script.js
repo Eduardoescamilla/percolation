@@ -7,15 +7,16 @@ var cycle = document.getElementById('btn_cycle');
 
 control();
 go.addEventListener('click', function() {
-    console.time('test');
+    console.time('one');
     control();
-    console.timeEnd('test');
+    console.timeEnd('one');
 });
 
 cycle.addEventListener('click', function() {
     var count = 0,
         luck = 0,
         times = document.getElementById('cycle').value;
+        console.time('cycle');
     while (count <= times) {
         if (control()) {
             luck++;
@@ -23,6 +24,7 @@ cycle.addEventListener('click', function() {
         count++;
         console.log('Calc No. ' + count + ' done.');
     }
+    console.timeEnd('cycle');
     console.log('The % of luck probes is: ' + luck / count);
 });
 
@@ -38,11 +40,9 @@ function control() {
 
     var a = fillRandomMatrix();
     checkClusters();
-    var leftCL = leftClusters();
     var goal = isPercolation();
     fillByColors();
     fillZeroCells();
-
 
 
 
@@ -90,56 +90,46 @@ function control() {
         }
 
 
+
         for (var i = 1; i < L; i++) {
             for (var j = 1; j < L; j++) {
-                chNeighbor(i, j);
+                if (a[i][j] === 2) {
+                    setTimeout(chNeighbor(i, j, 0), 5);
+                }
             }
         }
 
-        function chNeighbor(ii, jj) {
+
+        function chNeighbor(ii, jj, count) {
             var cur = a[ii][jj],
                 up = a[ii - 1][jj],
+                down = a[ii + 1][jj],
                 left = a[ii][jj - 1],
-                right = a[ii][jj + 1],
-                down = a[ii + 1][jj];
+                right = a[ii][jj + 1];
 
-            if (cur === 2) {
-                if (up === 1) {
-                    a[ii - 1][jj] = 2;
-                    setTimeout(chNeighbor(ii - 1, jj), 5);
-                }
-                if (down === 1) {
-                    a[ii + 1][jj] = 2;
-                     setTimeout(chNeighbor(ii + 1, jj), 5);
-                }
-                if (left === 1) {
-                    a[ii][jj - 1] = 2;
-                     setTimeout(chNeighbor(ii, jj - 1), 5);
-                }
-                if (right === 1) {
-                    a[ii][jj + 1] = 2;
-                     setTimeout(chNeighbor(ii, jj + 1), 5);
-                }
+
+            if (up === 1 && count < 1000) {
+                a[ii - 1][jj] = 2;
+                chNeighbor(ii - 1, jj, ++count);
             }
+            if (down === 1) {
+                a[ii + 1][jj] = 2;
+                chNeighbor(ii + 1, jj, ++count);
+            }
+            if (left === 1) {
+                a[ii][jj - 1] = 2;
+                chNeighbor(ii, jj - 1, ++count);
+            }
+            if (right === 1) {
+                a[ii][jj + 1] = 2;
+                chNeighbor(ii, jj + 1, ++count);
+            }
+
         }
         console.log('FINISH!');
+
     }
 
-    function leftClusters() {
-        //Выделяем только существующие кластеры
-        var leftCL = [];
-
-        for (var i = 0; i < L; i++) {
-            for (var j = 0; j < L; j++) {
-                if (a[i][j] !== 0) {
-                    if (leftCL.indexOf(a[i][j]) == -1) {
-                        leftCL.push(a[i][j]);
-                    }
-                }
-            }
-        }
-        return leftCL;
-    }
 
     function isPercolation() {
         var topColumn = [];
@@ -164,6 +154,7 @@ function control() {
                     context.fillRect((j - 1) * pixel, (i - 1) * pixel, pixel, pixel);
                 }
                 context.fillStyle = 'darkcyan';
+
 
             }
         }
