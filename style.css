@@ -4,7 +4,8 @@ body {
     height: 520px;
 }
 .canvas {
-    background-color: yellow;
+  margin-top: 30px;
+    background-color: #bd9c9c;
     width: 512px;
     height: 512px;
 }
@@ -19,5 +20,5 @@ body {
   width: 200px;
 }
 .prob {
-  width: 25px;
+  width: 40px;
 }
