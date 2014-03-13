@@ -10,7 +10,7 @@ body {
     height: 512px;
 }
 #canvas2 {
-    background-color: black;
+    background-color: #bd9c9c;
 }
 .controls {
   display: inline-block;
