@@ -12,42 +12,64 @@ var lengthInput = document.getElementById('selectLength');
  */
 
 Percolation.prototype.renormGroup = function() {
-    var length = (this.L + 1) / 2;
+    var length = (this.L - 1);
     var renormCluster = [];
     var ii = -1;
-    console.log('Максимум ' + (this.L + 2));
 
-    for (var i = 0; i < this.L + 2; i += 2) {
-        renormCluster[++ii] = new Array(length);
-        for (var j = 0; j < this.L + 2; j += 2) {
-            console.log('Я на i = ' + i + 'и на J = ' + j);
-            var cur = Percolation.a[i][j],
-                down = Percolation.a[i + 1][j],
-                right = Percolation.a[i][j + 1],
-                rigthDown = Percolation.a[i + 1][j + 1];
-            if ((cur && down && right && rigthDown) == 1) {
+    for (var i = 1; i < length; i += 2) {
+        renormCluster[++ii] = [];
+        for (var j = 1; j < length; j += 2) {
+            var cur = this.a[i][j],
+                down = this.a[i + 1][j],
+                right = this.a[i][j + 1],
+                rigthDown = this.a[i + 1][j + 1];
+            if ((cur && down && right && rigthDown) == (1 || 2)) {
                 renormCluster[ii].push(1);
-            } else if (cur === 0 && (right && rigthDown && down) == 1) {
+            } else if (cur === 0 && (right && rigthDown && down) !== 0) {
                 renormCluster[ii].push(1);
-            } else if (right === 0 && (cur && down && rigthDown) == 1) {
+            } else if (right === 0 && (cur && down && rigthDown) !== 0) {
                 renormCluster[ii].push(1);
-            } else if (rigthDown === 0 && (cur && right && down) == 1) {
+            } else if (rigthDown === 0 && (cur && right && down) !== 0) {
                 renormCluster[ii].push(1);
             } else if (down === 0 && (cur && right && rigthDown)) {
                 renormCluster[ii].push(1);
-            } else if ((cur && down) == 1 && (right && rigthDown) === 0) {
+            } else if ((cur && down) !== 0 && (right && rigthDown) === 0) {
                 renormCluster[ii].push(1);
-            } else if ((cur && down) === 0 && (right && rigthDown) == 1) {
+            } else if ((cur && down) === 0 && (right && rigthDown) !== 0) {
                 renormCluster[ii].push(1);
             } else {
                 renormCluster[ii].push(0);
             }
         }
     }
+
+    for (var i = 0; i < renormCluster.length; i++) {
+        renormCluster[i].push(0);
+        renormCluster[i].unshift(0);
+    }
+    renormCluster = transpose(renormCluster);
+    for (var i = 0; i < renormCluster.length; i++) {
+        renormCluster[i].push(0);
+        renormCluster[i].unshift(0);
+    }
+    renormCluster = transpose(renormCluster);
+
+    /*for (var i = 0; i < renormCluster.length; i++) {
+        var temp = '';
+        console.log('\n');
+        for (var j = 0; j < renormCluster.length; j++) {
+            temp += '\t' + renormCluster[i][j];
+        }
+        console.log(temp);
+    }*/
+
+
     context.clearRect(0, 0, 512, 512);
+
+
     Percolation.clearArray();
     Percolation.setA(renormCluster);
-    console.log(renormCluster);
+
 };
 
 
@@ -55,25 +77,20 @@ Percolation.prototype.renormGroup = function() {
 
 
 function Percolation() {
-    // var length = parseInt(lengthInput.options[lengthInput.selectedIndex].value, 10);
-
     this.a = [];
     this.L = length + 1;
     that = this;
 
-    // this.L = new Number();
     this.px = choosePixel();
     this.prob = document.getElementById('prob').value;
     this.goal = false;
-
-
 }
 
 
 
 Percolation.prototype.fillRandomMatrix = function() {
     for (var i = 0; i < this.L + 1; i++) {
-        this.a[i] = new Array(this.L);
+        this.a[i] = [];
         for (var j = 0; j < this.L + 1; j++) {
             if (i === 0 || i === this.L) {
                 this.a[i][j] = 0;
@@ -152,7 +169,9 @@ function choosePixel(bool) {
     var lengthInput = document.getElementById('selectLength');
     var length = parseInt(lengthInput.options[lengthInput.selectedIndex].value, 10);
     var param = 1;
-    if (bool) param = 2;
+    if (bool) {
+        param = 2;
+    }
     if (length === 8) {
         return 64 * param;
     } else if (length === 16) {
@@ -274,13 +293,16 @@ function startPercolation() {
 startPercolation();
 
 renorm.addEventListener('click', function() {
-    Percolation.setL(true);
+    var value = document.getElementById('selectLength').value;
+    if (Percolation.L === 9) return;
     Percolation.setPixel(true);
 
     Percolation.renormGroup();
+    Percolation.setL(true);
     Percolation.checkClusters();
     Percolation.isPercolation();
     Percolation.fillByColors();
+    document.getElementById('selectLength').value = value / 2;
 });
 
 
@@ -300,7 +322,7 @@ cycle.addEventListener('click', function() {
         }
         count.push(luck);
     }
-    //Параметры 1 ячейки гарфики
+    //Параметры 1 ячейки графика
     var yParams = 128 / times;
     var xParams = 512 / count.length;
     console.log(times);
@@ -319,35 +341,10 @@ cycle.addEventListener('click', function() {
     console.timeEnd('cycle');
 });
 
-
-
-
-
-
-
-
-function control() {
-    /**
-     * Убрать дублирование
-     */
-
-
-    var lengthInput = document.getElementById('selectLength');
-    var length = parseInt(lengthInput.options[lengthInput.selectedIndex].value, 10);
-    var L = length + 1;
-    var prob = document.getElementById('prob').value;
-    pixel = choosePixel();
-
-    (function() {
-        a = fillRandomMatrix();
-        checkClusters();
-        var goal = isPercolation();
-        fillByColors();
-        fillZeroCells();
-
-        if (goal) {
-            return true;
-        }
-        return false;
-    })();
+function transpose(a) {
+    return Object.keys(a[0]).map(function(c) {
+        return a.map(function(r) {
+            return r[c];
+        });
+    });
 }
