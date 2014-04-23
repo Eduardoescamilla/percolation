@@ -172,7 +172,13 @@ function choosePixel(bool) {
     if (bool) {
         param = 2;
     }
-    if (length === 8) {
+    if (length === 1) {
+        return 512 * param;
+    } else if (length === 2) {
+        return 256 * param;
+    } else if (length === 4) {
+        return 128 * param;
+    } else if (length === 8) {
         return 64 * param;
     } else if (length === 16) {
         return 32 * param;
@@ -294,7 +300,7 @@ startPercolation();
 
 renorm.addEventListener('click', function() {
     var value = document.getElementById('selectLength').value;
-    if (Percolation.L === 9) return;
+    // if (Percolation.L === 9) return;
     Percolation.setPixel(true);
 
     Percolation.renormGroup();
