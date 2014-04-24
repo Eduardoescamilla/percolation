@@ -23,7 +23,7 @@ Percolation.prototype.renormGroup = function() {
                 down = this.a[i + 1][j],
                 right = this.a[i][j + 1],
                 rigthDown = this.a[i + 1][j + 1];
-            if ((cur && down && right && rigthDown) == (1 || 2)) {
+            if ((cur && down && right && rigthDown) !== 0) {
                 renormCluster[ii].push(1);
             } else if (cur === 0 && (right && rigthDown && down) !== 0) {
                 renormCluster[ii].push(1);
